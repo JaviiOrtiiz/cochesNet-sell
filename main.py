@@ -3,6 +3,7 @@ import json
 import pandas as pd
 from datetime import datetime
 import logging
+from flask import Flask, send_file
 
 # Request parameters
 minPrice = 18000
@@ -258,4 +259,15 @@ def main():
     # When finished, we generate a log to indicate that the process has been completed.
     logging.info('Scraping finished (SUCCESS!). {} pages scraped.'.format(NPages))
 
-main()
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    main()  # Call the function to generate the CSV
+    # Specify the path to the generated CSV file
+    csv_path = 'interestingCars.csv'
+    # Send the file as response with appropriate headers
+    return send_file(csv_path, as_attachment=True)
+
+if __name__ == '__main__':
+    app.run(debug=True)
