@@ -6,3 +6,4 @@ cochesnet.log
 # ignore myenv
 myenv/
 
+pycache/
