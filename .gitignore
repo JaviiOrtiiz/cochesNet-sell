@@ -3,3 +3,6 @@ analisis.ipynb
 # ignore cochesnet.log
 cochesnet.log
 
+# ignore myenv
+myenv/
+
