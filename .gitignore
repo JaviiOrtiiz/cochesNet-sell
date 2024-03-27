@@ -7,3 +7,6 @@ cochesnet.log
 myenv/
 
 pycache/
+
+#csv
+*.csv
