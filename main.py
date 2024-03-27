@@ -8,10 +8,10 @@ import logging
 minPrice = 18000
 maxPrice = 35000
 minKm = None
-maxKm = 50000
+maxKm = 100000
 minHp = 199
 maxHp = 201
-minYear = 2019
+minYear = 2018
 maxYear = 2023
 
 def doRequest(pageNum, minPrice, maxPrice, minKm, maxKm, minHp, maxHp, minYear, maxYear):
@@ -105,7 +105,6 @@ def doRequest(pageNum, minPrice, maxPrice, minKm, maxKm, minHp, maxHp, minYear, 
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     return json.loads(response.text)
-
 
 def fromPagesListGetDataframe(pages):
     """Converts the list of pages into a pandas dataframe"""
@@ -217,7 +216,6 @@ def fromPagesListGetDataframe(pages):
     df = df.sort_values(by=['price'])
     return df
 
-
 def fromDataframeGenerateLogs(df):
     """For each row in the dataframe, generates a log with the information of the ad."""
     # We define a dataframe to store the interesting cars
@@ -230,6 +228,10 @@ def fromDataframeGenerateLogs(df):
     
     # We generate a dataframe with the information of the interesting cars and save it to a csv file.
     interestingCars = pd.DataFrame(interestingCars, columns=['title', 'price', 'km', 'url','year','province'])
+    # Add a column with the current date
+    interestingCars['date'] = datetime.now()
+    # Reorder columns
+    interestingCars = interestingCars[['date', 'title', 'price', 'km', 'year', 'url', 'province']]
     interestingCars.to_csv('interestingCars.csv', index=False, sep=';')
 
 def main():
@@ -255,8 +257,5 @@ def main():
 
     # When finished, we generate a log to indicate that the process has been completed.
     logging.info('Scraping finished (SUCCESS!). {} pages scraped.'.format(NPages))
-    # Save dataframe to csv
-    df.to_csv('carsExport.csv', index=False, sep=';')
-    logging.info('Dataframe saved to csv.')
 
 main()
