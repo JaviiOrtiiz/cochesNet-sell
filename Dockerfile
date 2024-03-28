@@ -11,7 +11,10 @@ COPY requirements.txt .
 COPY main-no-pandas.py .
 
 # Copiar el script de shell al contenedor
-COPY run_script.sh .
+COPY run.sh .
+
+#Copiar entrypoint.sh al contenedor
+COPY entrypoint.sh .
 
 # Install the required packages
 RUN pip install -r requirements.txt
