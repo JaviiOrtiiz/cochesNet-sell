@@ -120,6 +120,7 @@ def fromPagesListGetDict(pages):
 
     # Create a list for each column of the following dataframe
     timestamp = []
+    id = []
     title = []
     url = []
     price = []
@@ -144,6 +145,7 @@ def fromPagesListGetDict(pages):
     for car in cars_list:
         # Attributes that are always present
         timestamp.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        id.append(int(car['url'].split('-')[-2]))
         title.append(str(car['title']))
         url.append(str(car['url']))
         price.append(int(car['price']['amount']))
@@ -195,6 +197,7 @@ def fromPagesListGetDict(pages):
     # Create a json with the lists
     data = {
       'timestamp': timestamp,
+      'id': id,
       'title': title,
       'url':url,
       'price':price,
@@ -232,7 +235,7 @@ def main():
     # csv to file withouth pandas
     #csv name is timestamp
     with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")), 'w') as f:
-        f.write('date;title;url;price;km;year;cubicCapacity;mainProvince;fuelType;bodyTypeId;warranty_id;warranty_months;isProfessional;publishedDate;hasUrge;phone;environmentalLabel;drivenWheelsId;transmissionTypeId\n')
+        f.write('date;id;title;url;price;km;year;cubicCapacity;mainProvince;fuelType;bodyTypeId;warranty_id;warranty_months;isProfessional;publishedDate;hasUrge;phone;environmentalLabel;drivenWheelsId;transmissionTypeId\n')
         for i in range(len(csv['title'])):
             f.write('{}'.format(';'.join([str(csv[key][i]) for key in csv.keys()])))
             f.write('\n')
