@@ -1,5 +1,5 @@
 # Image: python:latest
-FROM python:latest
+FROM arm32v7/python:latest
 
 # Set the working directory
 WORKDIR /app
@@ -8,10 +8,10 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Copy main.py to the working directory
-COPY main.py .
+COPY main-no-pandas.py .
 
 # Install the required packages
 RUN pip install -r requirements.txt
 
 # Run the main.py file
-CMD ["python", "main.py"]
+CMD ["python", "main-no-pandas.py"]
