@@ -20,4 +20,4 @@ COPY entrypoint.sh .
 RUN pip install -r requirements.txt
 
 # Run the shell script to execute the python script periodically
-CMD ["sh", "run_script.sh"]
+CMD ["sh", "entrypoint.sh"]
