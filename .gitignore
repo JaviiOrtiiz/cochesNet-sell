@@ -3,10 +3,13 @@ analisis.ipynb
 # ignore cochesnet.log
 cochesnet.log
 
+#ignore main.py
+main.py
+
 # ignore myenv
 myenv/
 
 pycache/
 
 #csv
-*.csv
+interestingCars.csv
