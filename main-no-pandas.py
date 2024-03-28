@@ -231,7 +231,7 @@ def main():
 
     # csv to file withouth pandas
     #csv name is timestamp
-    with open('cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")), 'w') as f:
+    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")), 'w') as f:
         f.write('date;title;url;price;km;year;cubicCapacity;mainProvince;fuelType;bodyTypeId;warranty_id;warranty_months;isProfessional;publishedDate;hasUrge;phone;environmentalLabel;drivenWheelsId;transmissionTypeId\n')
         for i in range(len(csv['title'])):
             f.write('{}'.format(';'.join([str(csv[key][i]) for key in csv.keys()])))
