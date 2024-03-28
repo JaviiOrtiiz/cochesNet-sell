@@ -14,4 +14,4 @@ COPY main-no-pandas.py .
 RUN pip install -r requirements.txt
 
 # Run the main.py file
-CMD ["python", "main.py"]
+CMD ["python", "main-no-pandas.py"]
