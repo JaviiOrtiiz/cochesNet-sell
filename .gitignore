@@ -1,12 +1,6 @@
-# ignore analisis.ipynb
-analisis.ipynb
-# ignore cochesnet.log
+csv/
 cochesnet.log
-
-#ignore main.py
 main.py
-
-# ignore myenv
 myenv/
-
-pycache/
+__pycache__/
+analysis.ipynb

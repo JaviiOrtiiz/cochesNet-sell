@@ -8,7 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Copy main.py to the working directory
-COPY main-no-pandas.py .
+COPY main.py .
 
 # Copiar el script de shell al contenedor
 COPY run.sh .

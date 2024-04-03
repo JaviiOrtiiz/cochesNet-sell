@@ -1,9 +1,6 @@
 import requests
 import json
-import pandas as pd
 from datetime import datetime
-import logging
-from flask import Flask, send_file
 
 # Request parameters
 minPrice = 18000
@@ -107,7 +104,7 @@ def doRequest(pageNum, minPrice, maxPrice, minKm, maxKm, minHp, maxHp, minYear, 
     response = requests.request("POST", url, headers=headers, data=payload)
     return json.loads(response.text)
 
-def fromPagesListGetDataframe(pages):
+def fromPagesListGetDict(pages):
     """Converts the list of pages into a pandas dataframe"""
     pages_dict = []
 
@@ -122,6 +119,8 @@ def fromPagesListGetDataframe(pages):
             cars_list.append(car)
 
     # Create a list for each column of the following dataframe
+    timestamp = []
+    id = []
     title = []
     url = []
     price = []
@@ -145,6 +144,8 @@ def fromPagesListGetDataframe(pages):
     # each attribute to the corresponding list
     for car in cars_list:
         # Attributes that are always present
+        timestamp.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        id.append(int(car['url'].split('-')[-2]))
         title.append(str(car['title']))
         url.append(str(car['url']))
         price.append(int(car['price']['amount']))
@@ -193,81 +194,51 @@ def fromPagesListGetDataframe(pages):
             drivenWheelsId.append("None")
         transmissionTypeId.append(int(car['transmissionTypeId']))
     
+    # Create a json with the lists
+    data = {
+      'timestamp': timestamp,
+      'id': id,
+      'title': title,
+      'url':url,
+      'price':price,
+      'km':km,
+      'year':year,
+      'cubicCapacity':cubicCapacity,
+      'mainProvince':mainProvince,
+      'fuelType':fuelType,
+      'bodyTypeId':bodyTypeId,
+      'warranty_id':warranty_id,
+      'warranty_months':warranty_months,
+      'isProfessional':isProfessional,
+      'publishedDate':publishedDate,
+      'hasUrge':hasUrge,
+      'phone':phone,
+      'environmentalLabel':environmentalLabel,
+      'drivenWheelsId':drivenWheelsId,
+      'transmissionTypeId':transmissionTypeId}
+    return data
 
-    # Dataframe creation
-    df = pd.DataFrame({'title': title,
-                       'url':url,
-                       'price':price,
-                       'km':km,
-                       'year':year,
-                       'cubicCapacity':cubicCapacity,
-                       'mainProvince':mainProvince,
-                       'fuelType':fuelType,
-                       'bodyTypeId':bodyTypeId,
-                       'warranty_id':warranty_id,
-                       'warranty_months':warranty_months,
-                       'isProfessional':isProfessional,
-                       'publishedDate':publishedDate,
-                       'hasUrge':hasUrge,
-                       'phone':phone,
-                       'environmentalLabel':environmentalLabel,
-                       'drivenWheelsId':drivenWheelsId,
-                       'transmissionTypeId':transmissionTypeId})
-    # Sort by price
-    df = df.sort_values(by=['price'])
-    return df
-
-def fromDataframeGenerateLogs(df):
-    """For each row in the dataframe, generates a log with the information of the ad."""
-    # We define a dataframe to store the interesting cars
-    interestingCars = []
-    
-    # We iterate over the dataframe
-    for i in range(len(df)):
-        interestingCars.append([df['title'][i], df['price'][i], df['km'][i], df['url'][i], df['year'][i], df['mainProvince'][i]])
-        logging.info('Timestamp: {} - Car: {} - Price: {} - Km: {} - URL: {} - Year: {} - Province: {}'.format(datetime.now(), df['title'][i], df['price'][i], df['km'][i], df['url'][i], df['year'][i], df['mainProvince'][i]))
-    
-    # We generate a dataframe with the information of the interesting cars and save it to a csv file.
-    interestingCars = pd.DataFrame(interestingCars, columns=['title', 'price', 'km', 'url','year','province'])
-    # Add a column with the current date
-    interestingCars['date'] = datetime.now()
-    # Reorder columns
-    interestingCars = interestingCars[['date', 'title', 'price', 'km', 'year', 'url', 'province']]
-    interestingCars.to_csv('interestingCars.csv', index=False, sep=';')
 
 def main():
-    # We generate a log to see the number of pages to be processed.
-    logging.basicConfig(filename='cochesnet.log', level=logging.INFO)
-
     # We make a request to see how many pages there are.
     testForNumOfPages = doRequest(0, minPrice, maxPrice, minKm, maxKm, minHp, maxHp, minYear, maxYear)
     NPages = int(testForNumOfPages['meta']['totalPages'])
-    logging.info('Starting to scrape. Total pages: {}'.format(NPages))
 
     # We do the requests and store them in a list.
     pages = []
     for pageNumber in range(NPages+1):
         pages.append(doRequest(pageNumber, minPrice, maxPrice, minKm, maxKm, minHp, maxHp, minYear, maxYear))
 
-    logging.info('Scraping finished (SUCCESS!). {} pages scraped.'.format(NPages))    
-    # We generate a dataframe with the information of the ads.
-    df = fromPagesListGetDataframe(pages)
+    # We generate a CSV with the information of the ads.
+    csv = fromPagesListGetDict(pages)
 
-    # Generate logs
-    fromDataframeGenerateLogs(df)
+    # csv to file withouth pandas
+    #csv name is timestamp
+    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")), 'w') as f:
+        f.write('date;id;title;url;price;km;year;cubicCapacity;mainProvince;fuelType;bodyTypeId;warranty_id;warranty_months;isProfessional;publishedDate;hasUrge;phone;environmentalLabel;drivenWheelsId;transmissionTypeId\n')
+        for i in range(len(csv['title'])):
+            f.write('{}'.format(';'.join([str(csv[key][i]) for key in csv.keys()])))
+            f.write('\n')
+        f.close()
 
-    # When finished, we generate a log to indicate that the process has been completed.
-    logging.info('Scraping finished (SUCCESS!). {} pages scraped.'.format(NPages))
-
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    main()  # Call the function to generate the CSV
-    # Specify the path to the generated CSV file
-    csv_path = 'interestingCars.csv'
-    # Send the file as response with appropriate headers
-    return send_file(csv_path, as_attachment=True)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+main()
