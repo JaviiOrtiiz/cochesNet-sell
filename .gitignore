@@ -3,4 +3,5 @@ cochesnet.log
 main.py
 myenv/
 __pycache__/
-analysis.ipynb
+*.ipynb
+*.html
