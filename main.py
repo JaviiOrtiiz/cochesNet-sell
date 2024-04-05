@@ -235,7 +235,7 @@ def main():
     # csv to file withouth pandas. Replace all ñ with n
     #csv name is timestamp
     # use utf-8 encoding
-    with open('csv/cochesnet_{}.csv'.format(datetime.now().strftime("%Y-%m-%d_%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as f:
+    with open('csv/cochesnet_{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as f:
         f.write('date;id;title;url;price;km;year;cubicCapacity;mainProvince;fuelType;bodyTypeId;warranty_id;warranty_months;isProfessional;publishedDate;hasUrge;phone;environmentalLabel;drivenWheelsId;transmissionTypeId\n')
         for i in range(len(csv['title'])):
             # Replace ñ with n
