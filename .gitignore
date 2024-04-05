@@ -4,3 +4,5 @@ myenv/
 __pycache__/
 *.ipynb
 *.html
+remove_cells_analysis.py
+report.pdf
