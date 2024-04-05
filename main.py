@@ -144,7 +144,7 @@ def fromPagesListGetDict(pages):
     # each attribute to the corresponding list
     for car in cars_list:
         # Attributes that are always present
-        timestamp.append(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        timestamp.append(datetime.now().strftime("%Y-%m-%d %H:{}:{}".format("00", "00")))
         id.append(int(car['url'].split('-')[-2]))
         title.append(str(car['title']))
         url.append(str(car['url']))
@@ -232,11 +232,13 @@ def main():
     # We generate a CSV with the information of the ads.
     csv = fromPagesListGetDict(pages)
 
-    # csv to file withouth pandas
+    # csv to file withouth pandas. Replace all ñ with n
     #csv name is timestamp
-    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")), 'w') as f:
+    # use utf-8 encoding
+    with open('csv/cochesnet_{}.csv'.format(datetime.now().strftime("%Y-%m-%d_%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as f:
         f.write('date;id;title;url;price;km;year;cubicCapacity;mainProvince;fuelType;bodyTypeId;warranty_id;warranty_months;isProfessional;publishedDate;hasUrge;phone;environmentalLabel;drivenWheelsId;transmissionTypeId\n')
         for i in range(len(csv['title'])):
+            # Replace ñ with n
             f.write('{}'.format(';'.join([str(csv[key][i]) for key in csv.keys()])))
             f.write('\n')
         f.close()
