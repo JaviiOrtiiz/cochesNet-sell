@@ -245,17 +245,20 @@ def main():
         f.close()
   
   # check if csv file has duplicates
-    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'r', encoding='utf-8') as f:
-        lines = f.readlines()
+    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'r', encoding='utf-8') as g:
+        lines = g.readlines()
         # if a line is duplicated, remove it
         lines = list(set(lines))
-        f.close()
+        g.close()
 
-    # write the cleaned file
-    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as f:
+    # write the cleaned file. ensure the first line is the header
+    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as h:
+        h.write('date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n')
         for line in lines:
-            f.write(line)
-        f.close()
+            # if line is not the header
+            if line != 'date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n':
+              h.write(line)
+        h.close()
 
 
 
