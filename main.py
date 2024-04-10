@@ -126,22 +126,23 @@ def fromPagesListGetDict(pages):
     price = []
     km = []
     year = []
-    cubicCapacity = []
+    # cubicCapacity = []
     mainProvince = [] 
-    fuelType = []
-    bodyTypeId = []
-    warranty_id = []
-    warranty_months = []
+    # fuelType = []
+    # bodyTypeId = []
+    # warranty_id = []
+    # warranty_months = []
     isProfessional = []
-    publishedDate = []
-    hasUrge = []
+    # publishedDate = []
+    # hasUrge = []
     phone = []
-    environmentalLabel = []
-    drivenWheelsId = []
+    # environmentalLabel = []
+    # drivenWheelsId = []
     transmissionTypeId = []
 
     # For each car, append the value of
     # each attribute to the corresponding list
+    ### Commented attributes are not interesting for the analysis
     for car in cars_list:
         # Attributes that are always present
         timestamp.append(datetime.now().strftime("%Y-%m-%d %H:{}:{}".format("00", "00")))
@@ -150,8 +151,8 @@ def fromPagesListGetDict(pages):
         url.append(str(car['url']))
         price.append(int(car['price']['amount']))
         isProfessional.append(str(car['isProfessional']))
-        publishedDate.append(str(car['publishedDate']))
-        hasUrge.append(str(car['hasUrge']))
+        # publishedDate.append(str(car['publishedDate']))
+        # hasUrge.append(str(car['hasUrge']))
         phone.append(str(car['phone']))
         
         # Attributes that are not always present 
@@ -163,19 +164,19 @@ def fromPagesListGetDict(pages):
             year.append(int(car['year']))
         except KeyError:
             year.append("None")
-        try:
-            cubicCapacity.append(int(car['cubicCapacity']))
-        except KeyError:
-            cubicCapacity.append("None")
+        # try:
+        #     cubicCapacity.append(int(car['cubicCapacity']))
+        # except KeyError:
+        #     cubicCapacity.append("None")
         mainProvince.append(str(car['mainProvince']) )
-        try:
-            fuelType.append(str(car['fuelType']))
-        except KeyError:
-            fuelType.append("None")
-        try:
-            bodyTypeId.append(int(car['bodyTypeId']))
-        except KeyError:
-            bodyTypeId.append("None")
+        # try:
+        #     fuelType.append(str(car['fuelType']))
+        # except KeyError:
+        #     fuelType.append("None")
+        # try:
+        #     bodyTypeId.append(int(car['bodyTypeId']))
+        # except KeyError:
+        """     bodyTypeId.append("None")
         try:
             warranty_id.append(int(car['warranty']['id']))
         except KeyError:
@@ -191,9 +192,9 @@ def fromPagesListGetDict(pages):
         try:
             drivenWheelsId.append(int(car['drivenWheelsId']))
         except KeyError:
-            drivenWheelsId.append("None")
+            drivenWheelsId.append("None") """
         transmissionTypeId.append(int(car['transmissionTypeId']))
-    
+
     # Create a json with the lists
     data = {
       'timestamp': timestamp,
@@ -203,18 +204,18 @@ def fromPagesListGetDict(pages):
       'price':price,
       'km':km,
       'year':year,
-      'cubicCapacity':cubicCapacity,
+      # 'cubicCapacity':cubicCapacity,
       'mainProvince':mainProvince,
-      'fuelType':fuelType,
-      'bodyTypeId':bodyTypeId,
-      'warranty_id':warranty_id,
-      'warranty_months':warranty_months,
+      # 'fuelType':fuelType,
+      # 'bodyTypeId':bodyTypeId,
+      # 'warranty_id':warranty_id,
+      # 'warranty_months':warranty_months,"""
       'isProfessional':isProfessional,
-      'publishedDate':publishedDate,
-      'hasUrge':hasUrge,
+      # 'publishedDate':publishedDate,
+      # 'hasUrge':hasUrge,
       'phone':phone,
-      'environmentalLabel':environmentalLabel,
-      'drivenWheelsId':drivenWheelsId,
+      # 'environmentalLabel':environmentalLabel,
+      # 'drivenWheelsId':drivenWheelsId,"""
       'transmissionTypeId':transmissionTypeId}
     return data
 
@@ -236,11 +237,26 @@ def main():
     #csv name is timestamp
     # use utf-8 encoding
     with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as f:
-        f.write('date;id;title;url;price;km;year;cubicCapacity;mainProvince;fuelType;bodyTypeId;warranty_id;warranty_months;isProfessional;publishedDate;hasUrge;phone;environmentalLabel;drivenWheelsId;transmissionTypeId\n')
+        f.write('date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n')
         for i in range(len(csv['title'])):
             # Replace ñ with n
             f.write('{}'.format(';'.join([str(csv[key][i]) for key in csv.keys()])))
             f.write('\n')
         f.close()
+  
+  # check if csv file has duplicates
+    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        # if a line is duplicated, remove it
+        lines = list(set(lines))
+        f.close()
+
+    # write the cleaned file
+    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as f:
+        for line in lines:
+            f.write(line)
+        f.close()
+
+
 
 main()
