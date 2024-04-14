@@ -252,13 +252,32 @@ def main():
     # csv to file withouth pandas. Replace all ñ with n
     #csv name is current_time
     # use utf-8 encoding
-    with open('csv/{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as f:
+    with open('csv/cochesnet-{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as f:
         f.write('date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n')
-        for i in range(len(csv['title'])):
-            # Replace ñ with n
-            f.write('{}'.format(';'.join([str(csv[key][i]) for key in csv.keys()])))
-            f.write('\n')
-        f.close()
+        for i in range(len(csv['id'])):
+            f.write('{};{};{};{};{};{};{};{};{};{};{}\n'.format(
+                csv['timestamp'],
+                csv['id'][i],
+                csv['title'][i],
+                csv['url'][i],
+                csv['price'][i],
+                csv['km'][i],
+                csv['year'][i],
+                # csv['cubicCapacity'][i],
+                csv['mainProvince'][i],
+                # csv['fuelType'][i],
+                # csv['bodyTypeId'][i],
+                # csv['warranty_id'][i],
+                # csv['warranty_months'][i],
+                csv['isProfessional'][i],
+                # csv['publishedDate'][i],
+                # csv['hasUrge'][i],
+                csv['phone'][i],
+                # csv['environmentalLabel'][i],
+                # csv['drivenWheelsId'][i],
+                csv['transmissionTypeId'][i]
+            ))
+
   
   # check if csv file has duplicates
     with open('csv/cochesnet-{}.csv'.format(getCurrentTime()), 'r', encoding='utf-8') as g:
@@ -270,10 +289,9 @@ def main():
     # write the cleaned file. ensure the first line is the header
     with open('csv/cochesnet-{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as h:
         h.write('date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n')
-        for line in lines:
-            # if line is not the header
+        for line in lines[1:]:
             if line != 'date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n':
-              h.write(line)
+                h.write(line)
         h.close()
 
 
