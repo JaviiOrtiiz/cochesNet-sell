@@ -1,6 +1,22 @@
 import requests
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
+
+def getCurrentTime():
+    """Fetches the current time from timeapi.org and returns it as a datetime object."""
+    # Fetch current UTC time from timeapi.org
+    response = requests.head('http://timeapi.org/utc/now')
+
+    # Extract date string from response headers
+    date_header = response.headers['Date']
+
+    # Parse the date string into a datetime object
+    utc_time = datetime.strptime(date_header, '%a, %d %b %Y %H:%M:%S %Z')
+
+    # Adjust the timezone to UTC+2 for Barcelona
+    current_time= utc_time + timedelta(hours=2)
+
+    return current_time.strftime('cochesnet-%Y-%m-%d-%H-00-00')
 
 # Request parameters
 minPrice = 18000
@@ -234,9 +250,9 @@ def main():
     csv = fromPagesListGetDict(pages)
 
     # csv to file withouth pandas. Replace all ñ with n
-    #csv name is timestamp
+    #csv name is current_time
     # use utf-8 encoding
-    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as f:
+    with open('csv/{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as f:
         f.write('date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n')
         for i in range(len(csv['title'])):
             # Replace ñ with n
@@ -245,14 +261,14 @@ def main():
         f.close()
   
   # check if csv file has duplicates
-    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'r', encoding='utf-8') as g:
+    with open('csv/cochesnet-{}.csv'.format(getCurrentTime()), 'r', encoding='utf-8') as g:
         lines = g.readlines()
         # if a line is duplicated, remove it
         lines = list(set(lines))
         g.close()
 
     # write the cleaned file. ensure the first line is the header
-    with open('csv/cochesnet-{}.csv'.format(datetime.now().strftime("%Y-%m-%d-%H-{}-{}".format("00","00"))), 'w', encoding='utf-8') as h:
+    with open('csv/cochesnet-{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as h:
         h.write('date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n')
         for line in lines:
             # if line is not the header
