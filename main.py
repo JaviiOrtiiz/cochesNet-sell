@@ -268,7 +268,7 @@ def main():
         g.close()
 
     # write the cleaned file. ensure the first line is the header
-    with open('csv/cochesnet-{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as h:
+    with open('csv/{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as h:
         h.write('date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n')
         for line in lines:
             # if line is not the header
