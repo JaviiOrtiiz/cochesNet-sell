@@ -16,7 +16,7 @@ def getCurrentTime():
     # Adjust the timezone to UTC+2 for Barcelona
     current_time= utc_time + timedelta(hours=2)
 
-    return current_time.strftime('cochesnet-%Y-%m-%d-%H-00-00')
+    return current_time.strftime('%Y-%m-%d-%H-00-00')
 
 # Request parameters
 minPrice = 18000
@@ -161,7 +161,7 @@ def fromPagesListGetDict(pages):
     ### Commented attributes are not interesting for the analysis
     for car in cars_list:
         # Attributes that are always present
-        timestamp.append(datetime.now().strftime("%Y-%m-%d %H:{}:{}".format("00", "00")))
+        timestamp.append(getCurrentTime())
         id.append(int(car['url'].split('-')[-2]))
         title.append(str(car['title']))
         url.append(str(car['url']))
@@ -213,7 +213,7 @@ def fromPagesListGetDict(pages):
 
     # Create a json with the lists
     data = {
-      'timestamp': timestamp,
+      'timestamp': getCurrentTime(),
       'id': id,
       'title': title,
       'url':url,
@@ -268,7 +268,7 @@ def main():
         g.close()
 
     # write the cleaned file. ensure the first line is the header
-    with open('csv/{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as h:
+    with open('csv/cochesnet-{}.csv'.format(getCurrentTime()), 'w', encoding='utf-8') as h:
         h.write('date;id;title;url;price;km;year;mainProvince;isProfessional;phone;transmissionTypeId\n')
         for line in lines:
             # if line is not the header
