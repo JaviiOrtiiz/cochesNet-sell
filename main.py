@@ -4,14 +4,14 @@ from datetime import datetime, timedelta
 
 def getCurrentTime(type):
     """Fetches the current time from timeapi.org and returns it as a datetime object."""
-    # Fetch current UTC time from timeapi.org
-    response = requests.head('http://timeapi.org/utc/now')
+    # Fetch current UTC time from https://just-the-time.appspot.com/
+    response = requests.get('https://just-the-time.appspot.com/', headers={'User-Agent': 'Mozilla/5.0'})
 
-    # Extract date string from response headers
-    date_header = response.headers['Date']
+    # Get the date string from the body of the response
+    date_header = response.text.strip()
 
-    # Parse the date string into a datetime object
-    utc_time = datetime.strptime(date_header, '%a, %d %b %Y %H:%M:%S %Z')
+    # Parse the date string into a datetime object: 2024-05-06 21:05:11 
+    utc_time = datetime.strptime(date_header, '%Y-%m-%d %H:%M:%S')
 
     # Adjust the timezone to UTC+2 for Barcelona
     current_time= utc_time + timedelta(hours=2)
