@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to the directory containing your repository
-cd /home/pablo/cochesNet-sell
+cd /home/orangepi/cochesNet-sell
 
 # Pull the latest changes from the Git repository
 git pull
